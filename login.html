@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>login</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		#content{
+			width: 60%;
+			height: 500px;
+			background: #000;
+			margin: 200px auto;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+		}
+		#content p{
+			text-align: center;
+			color: #fff;
+			font-size: 30px;
+		}
+		#content input{
+			background: #000;
+			width: 400px;
+			height: 50px;
+			margin-top: 30px;
+			border: none;
+			border-bottom: 2px solid #fff;
+			outline: none;
+			text-align: center;
+			color: #fff;
+			font-size: 30px;
+		}
+	</style>
+</head>
+<body>
+	<div id="content">
+		<p>What's your nickname?</p>
+		<input id="nickname" type="text" maxlength="10" οnkeypress="onKeyPress(this)">
+	</div>
+	<script src="https://cdn.bootcss.com/socket.io/2.2.0/socket.io.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+    	$(function(){
+    		$('#nickname').bind('keypress',function(e){
+    			console.log(e)
+    			var keyCode = null;
+		
+				if(e.which)
+					keyCode = e.which;
+				else if(e.keyCode)
+					keyCode = e.keyCode;
+			
+				if(keyCode == 13) {
+					login();
+					return false;
+				}
+				return true;
+    		})
+    	})
+
+		function login(){
+			var nickname=$('#nickname').val();
+			if (nickname=='') {return}
+			location.href='index?nickname='+nickname;
+		}
+    </script>
+</body>
+</html>

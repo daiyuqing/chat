@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      #content{
+        width: 60%;
+        height: 500px;
+        border: 1px solid #ccc;
+        margin: 200px auto;
+        position: relative;
+      }
+      #content #messages{
+        width: 80%;
+        height: 450px;
+      }
+      #content #m{
+        width: 80%;
+        height: 40px;
+        background: #fff;
+        position: absolute;
+        bottom: 0;
+        padding: 3px;
+        font-size: 16px;
+        border: none;
+        border-top: 1px solid #ccc;
+        padding-left: 20px;
+      }
+      #user-list{
+        width: 20%;
+        height: 100%;
+        position: absolute;
+        right: 0;
+        top:0;
+        border-left: 1px solid #ccc;
+        list-style-type: none; margin: 0; padding: 0;
+        overflow-y: scroll;
+      }
+      #user-list li{
+        margin-left: 20px;
+        color: #666;
+        height: 30px;
+      }
+      #messages { list-style-type: none; margin: 0; padding: 0;overflow-y: scroll;}
+      li.msg{
+        font-size: 16px;
+        color: #333;
+        padding: 5px 10px;
+      }
+      li.info{
+        padding: 5px 10px;
+        font-size: 14px;
+        color: #666;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content">
+      <ul id="messages"></ul>
+      <input id="m" autocomplete="off" placeholder="输入消息，按enter发送" />
+      <ul id="user-list"></ul>
+    </div>
+    <script src="https://cdn.bootcss.com/socket.io/2.2.0/socket.io.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+      $(function () {
+        var socket = io();
+        var nickname=getUrlParam('nickname');
+        console.log(nickname)
+        socket.emit('set name', nickname);
+        socket.on('chat message', function(msg){
+          $('#messages').append($('<li class="msg">').text(msg));
+          var scrollHeight =$('#messages')[0].scrollHeight;
+          $("#messages").scrollTop(scrollHeight);
+        });
+        socket.on('user in-and-out', function(msg){
+          $('#messages').append($('<li class="info">').text(msg));
+        });
+        socket.on('user list', function(user_list){
+          console.log(user_list)
+          $('#user-list').html('');
+          for(let i in user_list){
+            $('#user-list').append($('<li>').text(user_list[i].nickname));
+          }
+        });
+        $('#m').bind('keypress',function(e){
+          var keyCode = null;
+          if(e.which)
+            keyCode = e.which;
+          else if(e.keyCode)
+            keyCode = e.keyCode;
+        
+          if(keyCode == 13) {
+            if($('#m').val()==''){return}
+            socket.emit('chat message', $('#m').val());
+            $('#m').val('');
+            return false;
+          }
+          return true;
+        })
+      });
+      //获取url中的参数
+      function getUrlParam(name) {
+          var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+          var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+          if (r != null) return decodeURIComponent(r[2]); return null; //返回参数值
+      }
+    </script>
+  </body>
+</html>
