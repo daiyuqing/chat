@@ -7,5 +7,5 @@
  npm install
  node index.js
  ```
-浏览器打开[http://localhost:3000/](http://localhost:3000/)
+浏览器打开[http://localhost:3333/](http://localhost:3333/)
 可开多个页面测试功能
